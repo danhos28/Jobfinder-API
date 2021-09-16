@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 
 // eslint-disable-next-line camelcase
-exports.generateAccessToken = (jobseeker_id) => {
+exports.generateAccessToken = (user_id, first_name) => {
   const payload = {
-    jobseeker: jobseeker_id,
+    user_id,
+    name: first_name,
   };
 
   return jwt.sign(payload, process.env.ACCESS_TOKEN_KEY, {
@@ -12,9 +13,10 @@ exports.generateAccessToken = (jobseeker_id) => {
 };
 
 // eslint-disable-next-line camelcase
-exports.generateRefreshToken = (jobseeker_id) => {
+exports.generateRefreshToken = (user_id, first_name) => {
   const payload = {
-    jobseeker: jobseeker_id,
+    user_id,
+    name: first_name,
   };
 
   return jwt.sign(payload, process.env.REFRESH_TOKEN_KEY, {
