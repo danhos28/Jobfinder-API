@@ -10,8 +10,13 @@ const upload = require('./src/api/middleware/upload');
 const app = express();
 const path = require('path');
 
+const corsConfig = {
+  credentials: true,
+  origin: true,
+};
+
 app.use(cookieParser());
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors(corsConfig));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // Static files
@@ -26,10 +31,6 @@ app.use(
 );
 app.use('/isVerify', auth, require('./src/api/routes/isVerify'));
 app.use('/logout', require('./src/api/routes/logout'));
-app.post('/upload', auth, upload.single('image'), (req, res) => {
-  console.log(req.file.path);
-  res.send(`image uploaded`);
-});
 
 // error handling
 app.use((error, req, res, next) => {
