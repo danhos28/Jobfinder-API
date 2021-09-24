@@ -31,6 +31,24 @@ exports.up = (pgm) => {
     profile_picture: {
       type: 'TEXT',
     },
+    experiences: {
+      type: 'TEXT',
+    },
+    skills: {
+      type: 'TEXT',
+    },
+    certificates: {
+      type: 'TEXT',
+    },
+    education: {
+      type: 'TEXT',
+    },
+    address: {
+      type: 'TEXT',
+    },
+    summary: {
+      type: 'TEXT',
+    },
   });
 };
 

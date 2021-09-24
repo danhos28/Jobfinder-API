@@ -24,13 +24,19 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 // Routes
 app.use('/register', require('./src/api/routes/register'));
 app.use('/auth', require('./src/api/routes/login'));
+app.use('/isVerify', auth, require('./src/api/routes/isVerify'));
+app.use('/logout', require('./src/api/routes/logout'));
+app.use(
+  '/jobseeker',
+  upload.single('image'),
+  require('./src/api/routes/jobseeker'),
+);
 app.use(
   '/vacancy',
   upload.single('image'),
+
   require('./src/api/routes/vacancy'),
 );
-app.use('/isVerify', auth, require('./src/api/routes/isVerify'));
-app.use('/logout', require('./src/api/routes/logout'));
 
 // error handling
 app.use((error, req, res, next) => {
