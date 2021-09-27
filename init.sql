@@ -15,6 +15,15 @@ CREATE TABLE jobseekers (
     summary TEXT
 )
 
+CREATE TABLE resumes (
+    resume_id VARCHAR(50) PRIMARY KEY,
+    jobseeker_id VARCHAR(50),
+    resume TEXT,
+    CONSTRAINT fk_resumes_jobseekers
+    FOREIGN KEY(jobseeker_id)  REFERENCES jobseekers(jobseeker_id)
+    ON DELETE CASCADE
+)
+
 CREATE TABLE authentications (
     token TEXT NOT NULL
 )

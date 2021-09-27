@@ -67,9 +67,17 @@ exports.addVacancy = async (req, res, next) => {
 
 exports.getVacancies = async (req, res, next) => {
   try {
-    const vacancies = await pool.query('SELECT * FROM vacancies');
+    const currentPage = req.query.page || 1;
+    const perPage = req.query.perPage || 5;
+    const offset = (currentPage - 1) * perPage;
 
-    res.json(vacancies.rows);
+    const vacancies = await pool.query(
+      'SELECT *, count(*) OVER() AS total_items FROM vacancies ORDER BY job_title LIMIT $1 OFFSET $2 ',
+      [perPage, offset],
+    );
+    const totalItems = vacancies.rows[0].total_items;
+
+    res.json({ data: vacancies.rows, currentPage, perPage, totalItems });
   } catch (error) {
     console.log(error);
     next(error);
@@ -211,6 +219,6 @@ exports.deleteVacancy = async (req, res, next) => {
 };
 
 const removeImage = (filename) => {
-  filePath = path.join(__dirname, '../../../images', filename);
+  filePath = path.join(__dirname, '../../../storage/images', filename);
   fs.unlink(filePath, () => console.log('image not found in database'));
 };

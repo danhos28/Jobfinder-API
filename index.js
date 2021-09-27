@@ -7,6 +7,7 @@ const cors = require('cors');
 
 const auth = require('./src/api/middleware/Authorizations');
 const upload = require('./src/api/middleware/upload');
+const uploadPdf = require('./src/api/middleware/uploadPdf');
 const app = express();
 const path = require('path');
 
@@ -20,11 +21,16 @@ app.use(cors(corsConfig));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // Static files
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static(path.join(__dirname, 'storage/images')));
 // Routes
 app.use('/register', require('./src/api/routes/register'));
 app.use('/auth', require('./src/api/routes/login'));
 app.use('/isVerify', auth, require('./src/api/routes/isVerify'));
+app.use(
+  '/uploadCv',
+  uploadPdf.single('resume'),
+  require('./src/api/routes/uploadCv'),
+);
 app.use('/logout', require('./src/api/routes/logout'));
 app.use(
   '/jobseeker',

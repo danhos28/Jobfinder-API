@@ -7,7 +7,8 @@ exports.getJobseekerById = async (req, res, next) => {
     const { id } = req.params;
 
     const profile = await pool.query(
-      'SELECT * FROM jobseekers WHERE jobseeker_id = $1',
+      `SELECT jobseekers.*, resumes.resume FROM jobseekers INNER JOIN resumes
+      ON jobseekers.jobseeker_id = resumes.jobseeker_id WHERE jobseekers.jobseeker_id = $1`,
       [id],
     );
 
@@ -123,6 +124,6 @@ exports.removeProfilepic = async (req, res) => {
 };
 
 const removeImage = (filename) => {
-  filePath = path.join(__dirname, '../../../images', filename);
+  filePath = path.join(__dirname, '../../../storage/images', filename);
   fs.unlink(filePath, () => console.log('image not found in database'));
 };
