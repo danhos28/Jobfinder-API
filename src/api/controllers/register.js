@@ -8,6 +8,7 @@ exports.addJobseeker = async (req, res, next) => {
     // eslint-disable-next-line object-curly-newline
     const { email, password, firstName, lastName } = req.body;
     const id = `jobseeker-${nanoid(16)}`;
+    const resumeId = `resume-${nanoid(16)}`;
 
     const user = await pool.query('SELECT * FROM jobseekers WHERE email = $1', [
       email,
@@ -27,6 +28,11 @@ exports.addJobseeker = async (req, res, next) => {
     const newJobseeker = await pool.query(
       'INSERT INTO jobseekers (jobseeker_id, email, password, first_name, last_name) VALUES($1, $2, $3, $4, $5) RETURNING *',
       [id, email, bcryptPassword, firstName, lastName],
+    );
+
+    await pool.query(
+      'INSERT INTO resumes (resume_id, jobseeker_id) VALUES($1, $2) RETURNING *',
+      [resumeId, id],
     );
 
     const accessToken = jwtGenerator.generateAccessToken(

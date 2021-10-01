@@ -24,6 +24,21 @@ CREATE TABLE resumes (
     ON DELETE CASCADE
 )
 
+CREATE TABLE applications (
+    application_id VARCHAR(50) PRIMARY KEY,
+    jobseeker_id VARCHAR(50),
+    vacancy_id VARCHAR(50),
+    message TEXT,
+    response TEXT NOT NULL,
+     applied_at TIMESTAMP NOT NULL,
+    CONSTRAINT fk_applications_jobseekers
+    FOREIGN KEY(jobseeker_id)  REFERENCES jobseekers(jobseeker_id)
+    ON DELETE CASCADE,
+    CONSTRAINT fk_applications_vacancies
+    FOREIGN KEY(vacancy_id)  REFERENCES vacancies(vacancy_id)
+    ON DELETE CASCADE
+)
+
 CREATE TABLE authentications (
     token TEXT NOT NULL
 )

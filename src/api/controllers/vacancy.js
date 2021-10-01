@@ -108,11 +108,11 @@ exports.getVacancyById = async (req, res, next) => {
 
 exports.getVacancyByEmployerId = async (req, res, next) => {
   try {
-    const { employer_id } = req.body;
+    const { id } = req.params;
 
     const vacancy = await pool.query(
       'SELECT * FROM vacancies WHERE employer_id = $1',
-      [employer_id],
+      [id],
     );
 
     res.json(vacancy.rows);
