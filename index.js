@@ -27,6 +27,7 @@ app.use('/register', require('./src/api/routes/register'));
 app.use('/auth', require('./src/api/routes/login'));
 app.use('/isVerify', auth, require('./src/api/routes/isVerify'));
 app.use('/application', require('./src/api/routes/application'));
+app.use('/savejob', require('./src/api/routes/savejobs'));
 app.use(
   '/uploadCv',
   uploadPdf.single('resume'),

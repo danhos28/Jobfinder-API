@@ -10,13 +10,14 @@ router.get('/', async (req, res) => {
       'DELETE FROM authentications WHERE token = $1',
       [refreshToken],
     );
-    if (!deleteToken.rowCount) {
+
+    if (refreshToken) {
+      res.clearCookie('refreshToken').send('user logged out');
+    } else {
       res.send('user logged out');
     }
-
-    res.clearCookie('refreshToken').send('user logged out');
   } catch (error) {
-    console.log('refresh token does not exist: ' + error);
+    console.log('INTERNAL SERVER ERROR: ' + error);
   }
 });
 
