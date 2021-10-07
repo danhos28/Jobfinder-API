@@ -68,13 +68,14 @@ exports.addVacancy = async (req, res, next) => {
 exports.getVacancies = async (req, res, next) => {
   try {
     const currentPage = req.query.page || 1;
-    const perPage = req.query.perPage || 5;
+    const perPage = req.query.perPage || 10;
     const offset = (currentPage - 1) * perPage;
 
     const vacancies = await pool.query(
-      'SELECT *, count(*) OVER() AS total_items FROM vacancies ORDER BY job_title LIMIT $1 OFFSET $2 ',
+      'SELECT *, count(*) OVER() AS total_items FROM vacancies ORDER BY "job_createAt" DESC LIMIT $1 OFFSET $2 ',
       [perPage, offset],
     );
+
     const totalItems = vacancies.rows[0].total_items;
 
     res.json({ data: vacancies.rows, currentPage, perPage, totalItems });
@@ -192,6 +193,7 @@ exports.updateVacancy = async (req, res, next) => {
     res.json(vacancy.rows[0]);
   } catch (error) {
     console.log(error);
+    next(error);
   }
 };
 
@@ -212,6 +214,31 @@ exports.deleteVacancy = async (req, res, next) => {
     );
 
     res.json({ message: 'Vacancy was successfully deleted' });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+exports.searchVacancy = async (req, res, next) => {
+  try {
+    const { searchVacancy } = req.query;
+    const currentPage = req.query.page || 1;
+    const perPage = req.query.perPage || 10;
+    const offset = (currentPage - 1) * perPage;
+
+    const search = await pool.query(
+      `SELECT *, count(*) OVER() AS total_items FROM vacancies WHERE job_title ILIKE $1 OR company ILIKE $1 ORDER BY job_title LIMIT $2 OFFSET $3`,
+      [`%${searchVacancy}%`, perPage, offset],
+    );
+
+    let totalItems = 0;
+
+    if (search.rowCount !== 0) {
+      totalItems = search.rows[0].total_items;
+    }
+
+    res.json({ data: search.rows, currentPage, perPage, totalItems });
   } catch (error) {
     console.log(error);
     next(error);

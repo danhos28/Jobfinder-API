@@ -4,6 +4,7 @@ const vacancyController = require('../controllers/vacancy');
 const router = express.Router();
 
 router.post('/', vacancyController.addVacancy);
+router.get('/search', vacancyController.searchVacancy);
 router.get('/employer/:id', vacancyController.getVacancyByEmployerId);
 router.get('/', vacancyController.getVacancies);
 router.get('/:id', vacancyController.getVacancyById);

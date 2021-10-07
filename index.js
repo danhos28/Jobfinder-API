@@ -16,10 +16,10 @@ const corsConfig = {
   origin: true,
 };
 
-app.use(cookieParser());
-app.use(cors(corsConfig));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors(corsConfig));
+app.use(cookieParser());
 // Static files
 app.use('/images', express.static(path.join(__dirname, 'storage/images')));
 // Routes
