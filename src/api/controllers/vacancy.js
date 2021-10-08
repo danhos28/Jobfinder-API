@@ -27,7 +27,7 @@ exports.addVacancy = async (req, res, next) => {
     }
 
     const id = `vacancy-${nanoid(16)}`;
-    const createAt = new Date(Date.now()).toISOString();
+    const createat = new Date(Date.now()).toISOString();
 
     const newVacancy = await pool.query(
       `INSERT INTO vacancies VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING *`,
@@ -47,7 +47,7 @@ exports.addVacancy = async (req, res, next) => {
         category,
         job_location,
         image,
-        createAt,
+        createat,
       ],
     );
 
@@ -72,7 +72,7 @@ exports.getVacancies = async (req, res, next) => {
     const offset = (currentPage - 1) * perPage;
 
     const vacancies = await pool.query(
-      'SELECT *, count(*) OVER() AS total_items FROM vacancies ORDER BY "job_createAt" DESC LIMIT $1 OFFSET $2 ',
+      'SELECT *, count(*) OVER() AS total_items FROM vacancies ORDER BY "job_createat" DESC LIMIT $1 OFFSET $2 ',
       [perPage, offset],
     );
 

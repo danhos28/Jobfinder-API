@@ -39,6 +39,26 @@ CREATE TABLE applications (
     ON DELETE CASCADE
 )
 
+CREATE TABLE interviews (
+    interview_id VARCHAR(50) PRIMARY KEY,
+    application_id VARCHAR(50) NOT NULL,
+    employer_id VARCHAR(50) NOT NULL,
+    jobseeker_id VARCHAR(50) NOT NULL,
+    interviewer TEXT NOT NULL,
+    type TEXT NOT NULL,
+    datetime TEXT NOT NULL,
+    link TEXT NOT NULL,
+    notes TEXT,
+    job_title TEXT NOT NULL,
+    company TEXT NOT NULL,
+    CONSTRAINT fk_interviews_employers
+    FOREIGN KEY(employer_id) REFERENCES employers(employer_id) ON DELETE CASCADE,
+    CONSTRAINT fk_interviews_jobseekers
+    FOREIGN KEY(jobseeker_id) REFERENCES jobseekers(jobseeker_id) ON DELETE CASCADE,
+    CONSTRAINT fk_interviews_applications
+    FOREIGN KEY(application_id) REFERENCES applications(application_id) ON DELETE CASCADE
+  )
+
 CREATE TABLE authentications (
     token TEXT NOT NULL
 )
@@ -70,8 +90,18 @@ CREATE TABLE vacancies (
     category TEXT NOT NULL,
     job_location TEXT NOT NULL,
     job_thumb TEXT,
-    job_createAt TIMESTAMP NOT NULL,
+    job_createat TIMESTAMP NOT NULL,
     CONSTRAINT fk_vacancies_employer
     FOREIGN KEY(employer_id)  REFERENCES employers(employer_id)
     ON DELETE CASCADE
+)
+
+CREATE TABLE savejobs (
+    save_id VARCHAR(50) PRIMARY KEY,
+    jobseeker_id VARCHAR(50) NOT NULL,
+    vacancy_id VARCHAR(50) NOT NULL,
+    CONSTRAINT fk_savejobs_vacancies
+    FOREIGN KEY(vacancy_id) REFERENCES vacancies(vacancy_id) ON DELETE CASCADE,
+    CONSTRAINT fk_savejobs_jobseekers
+    FOREIGN KEY(jobseeker_id) REFERENCES jobseekers(jobseeker_id) ON DELETE CASCADE
 )
