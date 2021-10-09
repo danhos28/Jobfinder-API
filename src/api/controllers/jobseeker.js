@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const pool = require('../../../db');
 
+const { uploadFile, getFileStream, deleteFile } = require('../../s3');
+
 exports.getJobseekerById = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -78,13 +80,15 @@ exports.postPicture = async (req, res) => {
     const { id } = req.params;
     const image = req.file.filename;
 
+    await uploadFile(req.file);
+
     const prevPicture = await pool.query(
       'SELECT profile_picture FROM jobseekers WHERE jobseeker_id = $1',
       [id],
     );
     const prevPictureFile = prevPicture.rows[0].profile_picture;
     if (prevPictureFile) {
-      removeImage(prevPictureFile);
+      deleteFile(prevPictureFile);
     }
 
     await pool.query(
@@ -92,6 +96,7 @@ exports.postPicture = async (req, res) => {
       [image, id],
     );
 
+    removeImage(image);
     res.status(200).json({ message: 'upload picture success' });
   } catch (error) {
     console.log(error);
@@ -110,6 +115,8 @@ exports.removeProfilepic = async (req, res) => {
     const prevPictureFile = prevPicture.rows[0].profile_picture;
     if (prevPictureFile) {
       removeImage(prevPictureFile);
+
+      deleteFile(prevPictureFile);
     }
 
     await pool.query(
@@ -120,6 +127,18 @@ exports.removeProfilepic = async (req, res) => {
     res.status(200).json({ message: 'profile picture removed' });
   } catch (error) {
     console.log(error);
+  }
+};
+
+exports.getProfilePic = (req, res, next) => {
+  try {
+    const key = req.params.key;
+    const readStream = getFileStream(key);
+
+    readStream.pipe(res);
+  } catch (error) {
+    console.log(error);
+    next(error);
   }
 };
 

@@ -3,6 +3,8 @@ const path = require('path');
 const { nanoid } = require('nanoid');
 const pool = require('../../../db');
 
+const { uploadFile, getFileStream, deleteFile } = require('./../../s3');
+
 exports.addVacancy = async (req, res, next) => {
   try {
     const {
@@ -23,11 +25,13 @@ exports.addVacancy = async (req, res, next) => {
 
     let image = '';
     if (req.file) {
+      await uploadFile(req.file);
+      removeImage(req.file.filename);
       image = req.file.filename;
     }
 
     const id = `vacancy-${nanoid(16)}`;
-    const createat = new Date(Date.now()).toISOString();
+    const createAt = new Date(Date.now()).toISOString();
 
     const newVacancy = await pool.query(
       `INSERT INTO vacancies VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING *`,
@@ -47,7 +51,7 @@ exports.addVacancy = async (req, res, next) => {
         category,
         job_location,
         image,
-        createat,
+        createAt,
       ],
     );
 
@@ -72,7 +76,7 @@ exports.getVacancies = async (req, res, next) => {
     const offset = (currentPage - 1) * perPage;
 
     const vacancies = await pool.query(
-      'SELECT *, count(*) OVER() AS total_items FROM vacancies ORDER BY "job_createat" DESC LIMIT $1 OFFSET $2 ',
+      'SELECT *, count(*) OVER() AS total_items FROM vacancies ORDER BY "job_createAt" DESC LIMIT $1 OFFSET $2 ',
       [perPage, offset],
     );
 
@@ -82,6 +86,18 @@ exports.getVacancies = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     next(error);
+  }
+};
+
+exports.getImages = (req, res, next) => {
+  try {
+    const key = req.params.key;
+    const readStream = getFileStream(key);
+
+    readStream.pipe(res);
+  } catch (error) {
+    next(error);
+    console.log(error);
   }
 };
 
@@ -102,7 +118,6 @@ exports.getVacancyById = async (req, res, next) => {
     }
     res.json(vacancy.rows[0]);
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -149,6 +164,9 @@ exports.updateVacancy = async (req, res, next) => {
           [id],
         );
         const filename = job_thumb.rows[0].job_thumb;
+        await deleteFile(filename);
+        await uploadFile(req.file);
+
         removeImage(filename);
       } else {
         throw new Error();
@@ -158,7 +176,10 @@ exports.updateVacancy = async (req, res, next) => {
         `SELECT job_thumb FROM vacancies WHERE vacancy_id = $1`,
         [id],
       );
+      await uploadFile(req.file);
+
       image = job_thumb.rows[0].job_thumb;
+      removeImage(req.file.filename);
     }
 
     const vacancy = await pool.query(
@@ -206,6 +227,7 @@ exports.deleteVacancy = async (req, res, next) => {
       [id],
     );
     const filename = job_thumb.rows[0].job_thumb;
+    deleteFile(filename);
     removeImage(filename);
 
     await pool.query(

@@ -8,6 +8,7 @@ router.get('/search', vacancyController.searchVacancy);
 router.get('/employer/:id', vacancyController.getVacancyByEmployerId);
 router.get('/', vacancyController.getVacancies);
 router.get('/:id', vacancyController.getVacancyById);
+router.get('/thumb/:key', vacancyController.getImages);
 router.put('/:id', vacancyController.updateVacancy);
 router.delete('/:id', vacancyController.deleteVacancy);
 
