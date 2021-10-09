@@ -100,7 +100,7 @@ exports.postPicture = async (req, res) => {
     res.status(200).json({ message: 'upload picture success' });
   } catch (error) {
     console.log(error);
-    res.status(500).send('Sernver Error');
+    res.status(500).send('Server Error');
   }
 };
 
