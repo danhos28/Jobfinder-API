@@ -184,7 +184,7 @@ exports.updateVacancy = async (req, res, next) => {
 
     const vacancy = await pool.query(
       `UPDATE vacancies SET job_title = $1, job_desc = $2, job_qualifications = $3,
-    job_notes = $4, job_level = $5, "job_educationReq" = $6, company = $7, company_about = $8, salary = $9, employment_type = $10,
+    job_notes = $4, job_level = $5, job_educationreq = $6, company = $7, company_about = $8, salary = $9, employment_type = $10,
     category = $11, job_location = $12, job_thumb = $13 WHERE vacancy_id = $14 RETURNING *`,
       [
         job_title,
