@@ -82,7 +82,7 @@ CREATE TABLE vacancies (
     job_qualifications TEXT NOT NULL,
     job_notes TEXT NOT NULL,
     job_level TEXT NOT NULL,
-    job_educationReq TEXT NOT NULL,
+    job_educationreq TEXT NOT NULL,
     company TEXT NOT NULL,
     company_about TEXT,
     salary TEXT NOT NULL,

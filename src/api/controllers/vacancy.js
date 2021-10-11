@@ -14,7 +14,7 @@ exports.addVacancy = async (req, res, next) => {
       job_qualifications,
       job_notes,
       job_level,
-      job_educationReq,
+      job_educationreq,
       company,
       company_about,
       salary,
@@ -43,7 +43,7 @@ exports.addVacancy = async (req, res, next) => {
         job_qualifications,
         job_notes,
         job_level,
-        job_educationReq,
+        job_educationreq,
         company,
         company_about,
         salary,
@@ -147,7 +147,7 @@ exports.updateVacancy = async (req, res, next) => {
       job_qualifications,
       job_notes,
       job_level,
-      job_educationReq,
+      job_educationreq,
       company,
       company_about,
       salary,
@@ -176,10 +176,8 @@ exports.updateVacancy = async (req, res, next) => {
         `SELECT job_thumb FROM vacancies WHERE vacancy_id = $1`,
         [id],
       );
-      await uploadFile(req.file);
 
       image = job_thumb.rows[0].job_thumb;
-      removeImage(req.file.filename);
     }
 
     const vacancy = await pool.query(
@@ -192,7 +190,7 @@ exports.updateVacancy = async (req, res, next) => {
         job_qualifications,
         job_notes,
         job_level,
-        job_educationReq,
+        job_educationreq,
         company,
         company_about,
         salary,

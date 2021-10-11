@@ -29,7 +29,7 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
-    job_educationReq: {
+    job_educationreq: {
       type: 'TEXT',
       notNull: true,
     },
@@ -59,7 +59,7 @@ exports.up = (pgm) => {
     job_thumb: {
       type: 'TEXT',
     },
-    job_createAt: {
+    job_createat: {
       type: 'TIMESTAMP',
       notNull: true,
     },
